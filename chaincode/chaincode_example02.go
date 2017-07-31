@@ -35,7 +35,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	fmt.Printf("Init called, initializing chaincode")
 	
 	var A  string    // Entities
-	var Aval int // Asset holdings
+	var Aval string // Asset holdings
 	var err error
 
 	if len(args) != 2 {
@@ -44,15 +44,16 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 
 	// Initialize the chaincode
 	A = args[0]
-	Aval, err = strconv.Atoi(args[1])
+	Aval = args[1]
+	err = stub.PutState(A, []byte(Aval))
 	if err != nil {
 		return nil, errors.New("Expecting integer value for asset holding")
 	}
 	
-	fmt.Printf("Aval = %d\n", Aval)
+	fmt.Printf("Aval = %s\n", Aval)
 
 	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(Aval)))
+	err = stub.PutState(A, []byte(Aval))
 	if err != nil {
 		return nil, err
 	}
